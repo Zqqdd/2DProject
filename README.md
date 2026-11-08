@@ -1,7 +1,5 @@
-Project made with :
+This C++ project was made with the following tools :
 
-- Git
-- C++
-- CMake
-
-This project can contain some french language since I am french. I try to normalize it to english, sorry !
+- Git (2.56.0.windows.4)
+- CMake (4.5.0-rc3)
+- SDL 3 (3.4.20)
