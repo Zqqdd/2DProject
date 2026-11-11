@@ -1,6 +1,2 @@
 build/
-.vscode/*
-!.vscode/settings.json
-!.vscode/launch.json
-!.vscode/tasks.json
-!.vscode/extensions.json
+.vscode/
