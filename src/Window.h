@@ -13,7 +13,12 @@ class Window
         bool create();
         void destroy();
 
+        SDL_Window* GetAddress();
+    
+    
     private:
+
         SDL_GLContext context = nullptr;
         SDL_Window *window = nullptr;
+
 };

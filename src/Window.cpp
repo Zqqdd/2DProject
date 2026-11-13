@@ -60,33 +60,6 @@ bool Window::create()
     std::cout << "OpenGL Version: " << glVersion << std::endl;
     std::cout << "OpenGL Renderer: " << glRenderer << " by " << glVendor << std::endl;
 
-    bool running = true;
-
-    while(running)
-    {
-        SDL_Event event;
-        while (SDL_PollEvent(&event))
-        {
-            if (event.type == SDL_EVENT_QUIT)
-            {
-                running = false;
-            }
-            if (event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_ESCAPE)
-            {
-                running = false;
-            }
-        }
-
-        int width = 0;
-        int height = 0;
-        SDL_GetWindowSizeInPixels(window, &width, &height);
-        glViewport(0, 0, width, height);
-
-        glClearColor(0.53f, 0.81f, 0.92f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        SDL_GL_SwapWindow(window);
-    }
     return true;
 }
 
@@ -95,4 +68,9 @@ void Window::destroy()
     SDL_GL_DestroyContext(context);
     SDL_DestroyWindow(window);
     SDL_Quit();
+}
+
+SDL_Window* Window::GetAddress()
+{
+    return window;
 }

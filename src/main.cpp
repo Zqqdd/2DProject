@@ -1,15 +1,14 @@
 #include <iostream>
 
-#include "Window.h"
+#include "Game.h"
 
 int main()
 {
-    Window window;
-    if(!window.create())
+    Game game;
+    if(!game.run())
     {
-        std::cerr << "Failed to create window!" << std::endl;
+        std::cerr << "Failed to run the game!" << std::endl;
         return 1;
     }
-
     return 0;
 }
