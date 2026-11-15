@@ -1,7 +1,6 @@
 #include "Game.h"
 
-#include "World.h"
-#include "Renderer.h"
+#include "../render/Renderer.h"
 
 #include "iostream"
 

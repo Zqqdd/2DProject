@@ -4,8 +4,10 @@ project(Sylven LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(game src/main.cpp src/Window.cpp src/Game.cpp
-    src/World.cpp src/Renderer.cpp)
+file(GLOB_RECURSE GAME_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*.cpp")
+
+add_executable(game ${GAME_SOURCES})
+target_include_directories(game PRIVATE src)
 
 set(SDL3_DIR "${CMAKE_SOURCE_DIR}/third_party/SDL3/cmake")
 find_package(SDL3 REQUIRED CONFIG)

@@ -10,10 +10,8 @@ Window::~Window()
 
 bool Window::create()
 {
-    // Permet de rappeler create() sans fuite : on repart d'un état propre.
-    destroy();
+    destroy(); // Permet de rappeler create() sans fuite : on repart d'un état propre.
     
-    // SDL_Init passe avant tout autre appel SDL. VIDEO suffit pour une fenêtre et ses événements.
     if(!SDL_Init(SDL_INIT_VIDEO))
     {
         std::cerr << "SDL failed to initiate! " << SDL_GetError() << std::endl;
@@ -27,7 +25,6 @@ bool Window::create()
               << SDL_VERSIONNUM_MICRO(version) << std::endl;
 
     
-    // SDL_WINDOW_OPENGL est obligatoire pour pouvoir créer un contexte OpenGL sur cette fenêtre.
     window = SDL_CreateWindow("Sylven Project",
                                           1280, 720,
                                           SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
@@ -40,8 +37,7 @@ bool Window::create()
     }
     std::cout << "SDL window created successfully!" << std::endl;
 
-    // Le contexte se crée après la fenêtre et devient le contexte courant : à partir d'ici, les appels gl... marchent.
-    context = SDL_GL_CreateContext(window);
+    context = SDL_GL_CreateContext(window); // Création du contexte OpenGL
 
     if(context == nullptr)
     {
@@ -53,17 +49,14 @@ bool Window::create()
     }
     std::cout << "SDL OpenGL context created successfully!" << std::endl;
 
-    // VSync : 1 = attendre le rafraîchissement de l'écran. Evite le déchirement d'image et limite les FPS.
-    // Un échec n'est pas bloquant, d'où l'absence de return false.
-    if(!SDL_GL_SetSwapInterval(1))
+    if(!SDL_GL_SetSwapInterval(1)) // Essaie d'activer la VSync
     {
         std::cerr << "SDL failed to set VSync! " << SDL_GetError() << std::endl;
     }
 
-    // glGetString renvoie des const GLubyte* : le cast sert uniquement à les afficher comme du texte.
-    const char *glVersion = reinterpret_cast<const char *>(glGetString(GL_VERSION));
-    const char *glRenderer = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
-    const char *glVendor = reinterpret_cast<const char *>(glGetString(GL_VENDOR));
+    const char *glVersion = reinterpret_cast<const char *>(glGetString(GL_VERSION)); // Récupère la version d'OpenGL
+    const char *glRenderer = reinterpret_cast<const char *>(glGetString(GL_RENDERER)); // Récupère le nom de la carte graphique
+    const char *glVendor = reinterpret_cast<const char *>(glGetString(GL_VENDOR)); // Récupère le nom du fabricant de la carte graphique
 
     std::cout << "OpenGL Version: " << glVersion << std::endl;
     std::cout << "OpenGL Renderer: " << glRenderer << " by " << glVendor << std::endl;

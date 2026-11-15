@@ -6,30 +6,25 @@
 
 Texture Renderer::loadTexture(const char* filePath)
 {
-    // id = 0 par défaut : c'est cette texture "vide" qu'on renvoie en cas d'échec.
-    Texture texture;
+    Texture texture;  // id = 0 par défaut : c'est cette texture "vide" qu'on renvoie en cas d'échec.
 
-    // 1. Lire le fichier : les pixels arrivent en mémoire vive (RAM).
-    SDL_Surface* surface = SDL_LoadPNG(filePath);
+    SDL_Surface* surface = SDL_LoadPNG(filePath);  // Lire le fichier : les pixels arrivent en mémoire vive (RAM).
     if(!surface)
     {
         std::cerr << "Failed to load : " << filePath << ": " << SDL_GetError() << std::endl;
         return texture;
     }
 
-    // 2. Imposer l'ordre R, G, B, A sur 1 octet chacun : c'est ce qu'on promet à glTexImage2D plus bas.
-    SDL_Surface* rgbaTexture = SDL_ConvertSurface(surface, SDL_PIXELFORMAT_RGBA32);
+    SDL_Surface* rgbaTexture = SDL_ConvertSurface(surface, SDL_PIXELFORMAT_RGBA32); // Imposer l'ordre R, G, B, A sur 1 octet chacun.
 
-    // La surface d'origine ne sert plus, que la conversion ait réussi ou non. Donc destroy.
-    SDL_DestroySurface(surface);
+    SDL_DestroySurface(surface); // La surface d'origine ne sert plus, que la conversion ait réussi ou non. Donc destroy.
     if(rgbaTexture == nullptr)
     {
         std::cerr << "Failed to convert " << filePath << ": " << SDL_GetError() << std::endl;
         return texture;
     }
 
-    // 3. Demander un numéro de texture à OpenGL, puis la rendre "courante" :
-    // les appels suivants s'appliquent à elle.
+    // Demander un numéro de texture à OpenGL, puis la rendre "courante"
     glGenTextures(1, &texture.id);
     glBindTexture(GL_TEXTURE_2D, texture.id);
 
@@ -37,14 +32,14 @@ Texture Renderer::loadTexture(const char* filePath)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    // 4. Copier les pixels de la RAM vers la carte graphique (VRAM).
+    // Copie des pixels de la RAM vers la carte graphique (VRAM).
     // Premier GL_RGBA : format de stockage. Second GL_RGBA + GL_UNSIGNED_BYTE : format de nos données.
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, rgbaTexture->w, rgbaTexture->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, rgbaTexture->pixels);
 
     texture.width = rgbaTexture->w;
     texture.height = rgbaTexture->h;
 
-    // 5. OpenGL a sa propre copie : celle en RAM peut être libérée.
+    // OpenGL a sa propre copie : celle en RAM peut être libérée.
     SDL_DestroySurface(rgbaTexture);
     return texture;
 }
@@ -52,21 +47,16 @@ Texture Renderer::loadTexture(const char* filePath)
 void Renderer::destroyTexture(Texture& texture)
 {
     glDeleteTextures(1, &texture.id);
-    // Remet id à 0 : la structure ne désigne plus une texture qui n'existe plus.
-    texture = Texture{};
+    texture = Texture{}; // Remet id à 0 dans l'objet texture
 }
 
 void Renderer::beginFrame(int width, int height)
 {
-    // Zone de dessin : toute la fenêtre.
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, width, height); // Zone de dessin : toute la fenêtre.
 
-    // Efface l'image précédente avec la couleur du ciel.
-    glClearColor(0.53f, 0.81f, 0.92f, 1.0f);
+    glClearColor(0.53f, 0.81f, 0.92f, 1.0f); // Efface l'image précédente avec la couleur du ciel.
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // Projection : nos coordonnées sont des pixels, (0,0) en haut à gauche, y vers le bas.
-    // glLoadIdentity d'abord, car glOrtho se cumule avec la matrice existante au lieu de la remplacer.
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0, width, height, 0, -1, 1);
@@ -74,25 +64,22 @@ void Renderer::beginFrame(int width, int height)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // Ces réglages restent actifs jusqu'à ce qu'on les éteigne.
-    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_TEXTURE_2D); // Active les modules OpenGL souhaités.
     glEnable(GL_BLEND);
-    // Transparence : le pixel dessiné est mélangé avec le fond selon son alpha.
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Réglages de transparence.
 }
 
 void Renderer::drawTexture(const Texture& texture, float xPos, float yPos, float textureDrawWidth, float textureDrawHeight)
 {
-    // id = 0 : le chargement a échoué. Mieux vaut ne rien dessiner qu'un rectangle blanc.
-    if(texture.id == 0)
+    if(texture.id == 0) // Si id = 0 : le chargement a échoué. Mieux vaut ne rien dessiner qu'un rectangle blanc.
     {
         std::cerr << "Attempted to draw an uninitialized texture!" << std::endl;
         return;
     }
 
     glBindTexture(GL_TEXTURE_2D, texture.id);
-    // La couleur courante multiplie la texture : blanc = aucune teinte.
-    glColor3f(1.0f, 1.0f, 1.0f);
+    glColor3f(1.0f, 1.0f, 1.0f); // La couleur courante multiplie la texture : blanc = aucune teinte.
 
     // Un rectangle = 4 sommets, en faisant le tour : haut gauche, haut droite, bas droite, bas gauche.
     // glTexCoord2f (quel coin de l'image, de 0 à 1) précède toujours le glVertex2f auquel il s'applique.
