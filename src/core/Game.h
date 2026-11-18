@@ -3,6 +3,10 @@
 #pragma once 
 #include <SDL3/SDL.h>
 #include "Window.h"
+#include "../render/Renderer.h"
+#include "../ui/MenuManager.h"
+
+enum class GameState {MainMenu, Playing, Paused};
 
 class Game
 {
@@ -13,8 +17,12 @@ class Game
     bool run(); // Lance le jeu. Renvoie false si l'initialisation échoue.
 
     Window window; // La fenêtre appartient au jeu, elle est détruite automatiquement avec lui.
+    Renderer renderer;
+    MenuManager menuManager;
+
     SDL_Window* windowptr = nullptr; // Adresse vers la fenêtre SDL brute, remplie au début de run().
 
 
-    private : 
+    private :
+    GameState state = GameState::MainMenu;
 };

@@ -14,11 +14,9 @@ bool Game::run()
     }
     windowptr = window.GetAddress();
 
-
-    // Le Renderer s'utilise après window.create() : charger une texture demande un contexte OpenGL.
-    Renderer renderer;
-    Texture texture = renderer.loadTexture("assets/textures/blocks/test.png"); // TEST
-
+    ///////////////////////////////////////////////////// LOAD
+    menuManager.load(renderer);
+    /////////////////////////////////////////////////////
 
     // 2. Boucle de jeu. Un tour = une image (frame) : événements, dessin, affichage.
     bool running = true;
@@ -45,13 +43,14 @@ bool Game::run()
         SDL_GetWindowSizeInPixels(windowptr, &width, &height);
         // Efface l'écran et prépare la projection. Tout ce qui se dessine vient après.
         renderer.beginFrame(width, height);
-        // Coin haut gauche du dessin à (100, 500). Le x4 agrandit le pixel art pour qu'il soit visible.
-        renderer.drawTexture(texture, 100.0f, 500.0f, texture.width*4.0f, texture.height*4.0f); //TEST
+
+        //////////////////////////////////////////////////////// DISPLAY
+        menuManager.draw(renderer, width, height);
+        ////////////////////////////////////////////////////////
 
         // Double buffer : on a dessiné sur une image cachée, on l'échange avec celle affichée.
         // Avec la VSync, cet appel attend le rafraîchissement de l'écran (environ 60 fois par seconde).
         SDL_GL_SwapWindow(windowptr);
     }
-    renderer.destroyTexture(texture); //TEST
     return true;
 }

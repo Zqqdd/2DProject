@@ -1,5 +1,17 @@
-// Point d'entrée du programme.
-// main se contente de créer le jeu et de le lancer : toute la logique est dans Game.
+// GITHUB https://github.com/Zqqdd/2DProject by :
+/*
+                           /$$           /$$                 /$$                    
+                          | $$          | $$                |__/                    
+ /$$$$$$$$  /$$$$$$   /$$$$$$$          | $$$$$$$   /$$$$$$  /$$  /$$$$$$$  /$$$$$$ 
+|____ /$$/ /$$__  $$ /$$__  $$          | $$__  $$ |____  $$| $$ /$$_____/ /$$__  $$
+   /$$$$/ | $$  \ $$| $$  | $$          | $$  \ $$  /$$$$$$$| $$|  $$$$$$ | $$$$$$$$
+  /$$__/  | $$  | $$| $$  | $$          | $$  | $$ /$$__  $$| $$ \____  $$| $$_____/
+ /$$$$$$$$|  $$$$$$$|  $$$$$$$ /$$      | $$  | $$|  $$$$$$$| $$ /$$$$$$$/|  $$$$$$$
+|________/ \____  $$ \_______/| $/      |__/  |__/ \_______/|__/|_______/  \_______/
+                | $$          |_/                                                   
+                | $$                                                                
+                |__/                                                                
+*/
 #include <iostream>
 
 #include "core/Game.h"
@@ -7,7 +19,7 @@
 int main()
 {
     Game game;
-    if(!game.run()) // run() contient la boucle de jeu : il ne rend la main qu'à la fermeture.
+    if(!game.run())
     {
         std::cerr << "Failed to run the game!" << std::endl;
         return 1;
