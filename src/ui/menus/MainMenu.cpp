@@ -4,11 +4,19 @@
 
 void MainMenu::load(Renderer& renderer)
 {
-    background = renderer.loadTexture("assets/textures/ui/menu/background.png");
+    background = renderer.loadTexture("assets/textures/ui/menus/mainMenu/background.png");
 
-    play.texturePath = "assets/textures/ui/menu/play.png";
-    settings.texturePath = "assets/textures/ui/menu/play.png";
-    quit.texturePath = "assets/textures/ui/menu/play.png";
+    play.texturePath = "assets/textures/ui/menus/mainMenu/play.png";
+    play.hoveredPath = "assets/textures/ui/menus/mainMenu/play_hover.png";
+    play.pressedPath = "assets/textures/ui/menus/mainMenu/play_pressed.png";
+
+    settings.texturePath = "assets/textures/ui/menus/mainMenu/settings.png";
+    settings.hoveredPath = "assets/textures/ui/menus/mainMenu/settings_hover.png";
+    settings.pressedPath = "assets/textures/ui/menus/mainMenu/settings_pressed.png";
+
+    quit.texturePath = "assets/textures/ui/menus/mainMenu/quit.png";
+    quit.hoveredPath = "assets/textures/ui/menus/mainMenu/quit_hover.png";
+    quit.pressedPath = "assets/textures/ui/menus/mainMenu/quit_pressed.png";
 
     play.centerY = 0.45f;
     settings.centerY = 0.60f;
@@ -46,4 +54,11 @@ void MainMenu::draw(Renderer& renderer, int windowWidth, int windowHeight)
     drawButton(renderer, play, windowWidth, windowHeight);
     drawButton(renderer, settings, windowWidth, windowHeight);
     drawButton(renderer, quit, windowWidth, windowHeight);
+}
+
+void MainMenu::update(float mouseX, float mouseY, bool mouseDown, int windowWidth, int windowHeight)
+{
+    updateButton(play, mouseX, mouseY, mouseDown, windowWidth, windowHeight);
+    updateButton(settings, mouseX, mouseY, mouseDown, windowWidth, windowHeight);
+    updateButton(quit, mouseX, mouseY, mouseDown, windowWidth, windowHeight);
 }

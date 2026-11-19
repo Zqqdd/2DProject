@@ -1,5 +1,3 @@
-// Game : le chef d'orchestre. Il crée la fenêtre, fait tourner la boucle de jeu
-// et appelle les autres modules
 #pragma once 
 #include <SDL3/SDL.h>
 #include "Window.h"
@@ -14,13 +12,13 @@ class Game
     Game() = default;
     ~Game() = default;
 
-    bool run(); // Lance le jeu. Renvoie false si l'initialisation échoue.
+    bool run(); // Lance le jeu.
 
-    Window window; // La fenêtre appartient au jeu, elle est détruite automatiquement avec lui.
+    Window window;
+    SDL_Window* windowptr = nullptr; // Adresse vers la fenêtre SDL.
+    
     Renderer renderer;
     MenuManager menuManager;
-
-    SDL_Window* windowptr = nullptr; // Adresse vers la fenêtre SDL brute, remplie au début de run().
 
 
     private :

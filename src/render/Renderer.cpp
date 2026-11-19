@@ -6,18 +6,18 @@
 
 Texture Renderer::loadTexture(const char* filePath)
 {
-    Texture texture;  // id = 0 par défaut : c'est cette texture "vide" qu'on renvoie en cas d'échec.
+    Texture texture;
 
-    SDL_Surface* surface = SDL_LoadPNG(filePath);  // Lire le fichier : les pixels arrivent en mémoire vive (RAM).
+    SDL_Surface* surface = SDL_LoadPNG(filePath);  // Lire le fichier : les pixels arrivent en mémoire vive (RAM)
     if(!surface)
     {
         std::cerr << "Failed to load : " << filePath << ": " << SDL_GetError() << std::endl;
         return texture;
     }
 
-    SDL_Surface* rgbaTexture = SDL_ConvertSurface(surface, SDL_PIXELFORMAT_RGBA32); // Imposer l'ordre R, G, B, A sur 1 octet chacun.
+    SDL_Surface* rgbaTexture = SDL_ConvertSurface(surface, SDL_PIXELFORMAT_RGBA32); // Convertir au format R, G, B, A
 
-    SDL_DestroySurface(surface); // La surface d'origine ne sert plus, que la conversion ait réussi ou non. Donc destroy.
+    SDL_DestroySurface(surface); // La surface d'origine ne sert plus donc destroy
     if(rgbaTexture == nullptr)
     {
         std::cerr << "Failed to convert " << filePath << ": " << SDL_GetError() << std::endl;
@@ -28,19 +28,17 @@ Texture Renderer::loadTexture(const char* filePath)
     glGenTextures(1, &texture.id);
     glBindTexture(GL_TEXTURE_2D, texture.id);
 
-    // NEAREST = pas de lissage, le pixel art reste net.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    // Copie des pixels de la RAM vers la carte graphique (VRAM).
-    // Premier GL_RGBA : format de stockage. Second GL_RGBA + GL_UNSIGNED_BYTE : format de nos données.
+    // Copie des pixels de la RAM vers la carte graphique (VRAM)
+    // Premier GL_RGBA : format de stockage. Second GL_RGBA + GL_UNSIGNED_BYTE : format des données
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, rgbaTexture->w, rgbaTexture->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, rgbaTexture->pixels);
 
     texture.width = rgbaTexture->w;
     texture.height = rgbaTexture->h;
 
-    // OpenGL a sa propre copie : celle en RAM peut être libérée.
-    SDL_DestroySurface(rgbaTexture);
+    SDL_DestroySurface(rgbaTexture); // Libère la RAM
     return texture;
 }
 

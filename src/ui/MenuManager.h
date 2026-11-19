@@ -13,6 +13,7 @@ class MenuManager
         void unload(Renderer& renderer);
         MenuRequest handleClick(float mouseX, float mouseY, int windowWidth, int windowHeight);
         void draw(Renderer& renderer, int windowWidth, int windowHeight);
+        void update(float mouseX, float mouseY, bool mouseDown, int windowWidth, int windowHeight);
 
     private:
         MenuId current = MenuId::Main;

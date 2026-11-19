@@ -8,14 +8,18 @@ constexpr int UI_REFERENCE_HEIGHT = 180;
 void loadButton(Renderer& renderer, Button& button)
 {
     if(button.texturePath != nullptr)
-    {
         button.texture = renderer.loadTexture(button.texturePath);
-    }
+    if(button.hoveredPath != nullptr)
+        button.hoveredTexture = renderer.loadTexture(button.hoveredPath);
+    if(button.pressedPath != nullptr)
+        button.pressedTexture = renderer.loadTexture(button.pressedPath);
 }
 
 void unloadButton(Renderer& renderer, Button& button)
 {
     renderer.destroyTexture(button.texture);
+    renderer.destroyTexture(button.hoveredTexture);
+    renderer.destroyTexture(button.pressedTexture);
 }
 
 Rect buttonRect(const Button& button, int windowWidth, int windowHeight)
@@ -52,13 +56,23 @@ void drawBackground(Renderer& renderer, const Texture& background, int windowWid
 
 void drawButton(Renderer& renderer, const Button& button, int windowWidth, int windowHeight)
 {
-    if(button.texture.id == 0)
-    {
-        return;
-    }
-
     Rect rect = buttonRect(button, windowWidth, windowHeight);
-    renderer.drawTexture(button.texture, rect.x, rect.y, rect.width, rect.height);
+
+    switch (button.state)
+    {
+    case State::Idle:
+        if(button.texture.id == 0) break;
+        renderer.drawTexture(button.texture, rect.x, rect.y, rect.width, rect.height);
+        break;
+    case State::Hovered:
+        if(button.hoveredTexture.id == 0) break;
+        renderer.drawTexture(button.hoveredTexture, rect.x, rect.y, rect.width, rect.height);
+        break;
+    case State::Pressed:
+        if(button.pressedTexture.id == 0) break;
+        renderer.drawTexture(button.pressedTexture, rect.x, rect.y, rect.width, rect.height);
+        break;
+    }
 }
 
 bool isUnderMouse(Button& button, float mouseX, float mouseY, int windowWidth, int windowHeight)
@@ -68,4 +82,14 @@ bool isUnderMouse(Button& button, float mouseX, float mouseY, int windowWidth, i
         return true;
     }
     return false;
+}
+
+void updateButton(Button& button, float mouseX, float mouseY, bool mouseDown, int windowWidth, int windowHeight)
+{
+    if (!isUnderMouse(button, mouseX, mouseY, windowWidth, windowHeight))
+        button.state = State::Idle;
+    else if (mouseDown)
+        button.state = State::Pressed;
+    else
+        button.state = State::Hovered;
 }

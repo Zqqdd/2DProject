@@ -2,13 +2,20 @@
 
 #include "../render/Renderer.h"
 
-enum class Action{None, Clicked, Hovered};
+enum class State{Idle, Hovered, Pressed};
 
 struct Button
 {
     const char* texturePath = nullptr;
+    const char* hoveredPath = nullptr;
+    const char* pressedPath = nullptr;
+
     float centerX = 0.5f;
     float centerY = 0.5f;
-    Action action = Action::None;
+
+    State state = State::Idle;
+
     Texture texture;
+    Texture hoveredTexture;
+    Texture pressedTexture;
 };

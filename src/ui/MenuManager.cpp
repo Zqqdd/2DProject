@@ -28,10 +28,20 @@ MenuRequest MenuManager::handleClick(float mouseX, float mouseY, int windowWidth
 
 void MenuManager::draw(Renderer& renderer, int windowWidth, int windowHeight)
 {
-    switch (current)
+    switch(current)
     {
     case MenuId::Main:
         mainMenu.draw(renderer, windowWidth, windowHeight);
+        break;
+    }
+}
+
+void MenuManager::update(float mouseX, float mouseY, bool mouseDown, int windowWidth, int windowHeight)
+{
+    switch(current)
+    {
+    case MenuId::Main:
+        mainMenu.update(mouseX, mouseY, mouseDown, windowWidth, windowHeight);
         break;
     }
 }

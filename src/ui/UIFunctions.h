@@ -12,3 +12,4 @@ void drawBackground(Renderer& renderer, const Texture& background, int windowWid
 void drawButton(Renderer& renderer, const Button& button, int windowWidth, int windowHeight);
 
 bool isUnderMouse(Button& button, float mouseX, float mouseY, int windowWidth, int windowHeight);
+void updateButton(Button& button, float mouseX, float mouseY, bool mouseDown, int windowWidth, int windowHeight);
