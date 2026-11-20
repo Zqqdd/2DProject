@@ -30,6 +30,7 @@ bool Game::init()
     windowptr = window.GetAddress();
 
     menuManager.load(renderer);
+    return true;
 }
 
 void Game::readFrameInfo()
