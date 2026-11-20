@@ -1,27 +1,38 @@
 #pragma once
 
+#include "../render/Renderer.h"
+
 class World
 {
     public:
-        World() = default;
-        ~World() = default;
 
-        bool setSize(int x, int y, int z);
+        bool init(Renderer& renderer, unsigned int sizeX, unsigned int sizeY, unsigned int sizeZ, int seed);
+        void coordsToScreen(int x, int y, int z, float& screenX, float& screenY);
+
         bool getSize(int &x, int &y, int &z);
-
-        bool setSeed(int s);
         bool getSeed(int &s);
 
         // Pas encore implémentés : ils affichent seulement un message.
         bool save();
         bool load();
 
-        bool generate();
+        bool draw(Renderer& renderer);
+
+        const int BLOCK_PX_SIZE = 32;
 
     private:
+
+        bool setSize(int x, int y, int z);
+        bool setSeed(int s);
+
+        bool generate();
+
         int width = 0; // x
-        int height = 0; // y
-        int depth = 0; // z
+        int depth = 0; // y
+        int height = 0; // z
 
         int seed = 0;
+
+        const char* blockPath = "assets/textures/blocks/grass.png";
+        Texture blockTexture;
 };

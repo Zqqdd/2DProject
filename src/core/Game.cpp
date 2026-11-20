@@ -7,6 +7,21 @@
 
 bool Game::run()
 {
+    if(!init()) return false;
+
+    while(running) // Boucle du jeu
+    {
+        readFrameInfo();
+        handleEvents();
+        update();
+        draw();
+    }
+    shutdown();
+    return true;
+}
+
+bool Game::init()
+{
     if(!window.create()) // Initialisation de la fenètre
     {
         std::cerr << "Failed to create the window!" << std::endl;
@@ -14,47 +29,75 @@ bool Game::run()
     }
     windowptr = window.GetAddress();
 
-    ///////////////////////////////////////////////////////// LOAD
     menuManager.load(renderer);
-    //----------------------------------------------------//
+}
 
-    bool running = true;
-    while(running) // Boucle du jeu
+void Game::readFrameInfo()
+{
+    SDL_GetWindowSizeInPixels(windowptr, &frame.width, &frame.height);
+    SDL_MouseButtonFlags mouseButtons = SDL_GetMouseState(&frame.mouseX, &frame.mouseY);
+    frame.mouseDown = (mouseButtons & SDL_BUTTON_LMASK) != 0;
+}
+
+void Game::handleEvents()
+{
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) // File d'évènement
     {
-        SDL_Event event;
-        while (SDL_PollEvent(&event)) // File d'évènement
-        {
-            if(event.type == SDL_EVENT_QUIT)
-            {
-                running = false;
-            }
-        }
-
-        int width = 0;
-        int height = 0;
-        SDL_GetWindowSizeInPixels(windowptr, &width, &height);
-
-        float mouseX = 0.0f;
-        float mouseY = 0.0f;
-        SDL_MouseButtonFlags mouseButtons = SDL_GetMouseState(&mouseX, &mouseY);
-        bool mouseDown = (mouseButtons & SDL_BUTTON_LMASK) != 0;
-
-        //////////////////////////////////////////////////////// UPDATE
-        if(mouseDown && menuManager.handleClick(mouseX, mouseY, width, height) == MenuRequest::Quit)
-            running = false;
-
-        menuManager.update(mouseX, mouseY, mouseDown, width, height);
-        
-        renderer.beginFrame(width, height); // Prépare l'écran pour l'affichage
-        //----------------------------------------------------//
-
-
-
-        //////////////////////////////////////////////////////// DISPLAY
-        menuManager.draw(renderer, width, height);
-
-        SDL_GL_SwapWindow(windowptr); // Affiche la nouvelle frame
-        //----------------------------------------------------//
+        if(event.type == SDL_EVENT_QUIT) running = false;
     }
-    return true;
+    if(frame.mouseDown && menuManager.handleClick(frame.mouseX, frame.mouseY, frame.width, frame.height) == MenuRequest::Quit) running = false;
+    if(frame.mouseDown && menuManager.handleClick(frame.mouseX, frame.mouseY, frame.width, frame.height) == MenuRequest::StartGame) changeState(GameState::Playing);
+}
+
+void Game::update()
+{
+    switch (state)
+    {
+    case GameState::InMenu:
+        menuManager.update(frame.mouseX, frame.mouseY, frame.mouseDown, frame.width, frame.height);
+        break;
+    case GameState::Playing:
+        gameScene.update();
+        break;
+    }
+}
+
+void Game::draw()
+{
+    renderer.beginFrame(frame.width, frame.height); // Prépare l'écran pour l'affichage
+
+    switch (state)
+    {
+    case GameState::InMenu:
+        menuManager.draw(renderer, frame.width, frame.height);
+        break;
+    case GameState::Playing:
+        gameScene.draw(renderer);
+        break;
+    }
+
+    SDL_GL_SwapWindow(windowptr); // Affiche la nouvelle frame
+}
+
+void Game::shutdown()
+{
+    menuManager.unload(renderer);
+    gameScene.unload();
+}
+
+void Game::changeState(GameState newState)
+{
+    if(newState == state) return;
+
+    if(newState == GameState::InMenu)
+    {
+        gameScene.unload();
+    }
+    if(newState == GameState::Playing)
+    {
+        gameScene.load(renderer);
+    }
+
+    state = newState;
 }

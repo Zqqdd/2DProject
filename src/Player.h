@@ -1,14 +1,17 @@
 #pragma once
 
+#include "render/Renderer.h"
+
 class Player 
 {
     public :
         Player() = default;
         ~Player() = default;
-            int PV; 
-            int endurance;
-            int force;
-            int agility;
+        
+        int PV; 
+        int endurance;
+        int force;
+        int agility;
 
         void create();
         void kill();
