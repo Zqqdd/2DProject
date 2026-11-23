@@ -1,13 +1,13 @@
 #pragma once
 
-#include "../render/Renderer.h"
+#include "render/Renderer.h"
+#include "render/Camera.h"
 
 class World
 {
     public:
 
         bool init(Renderer& renderer, unsigned int sizeX, unsigned int sizeY, unsigned int sizeZ, int seed);
-        void coordsToScreen(int x, int y, int z, float& screenX, float& screenY);
 
         bool getSize(int &x, int &y, int &z);
         bool getSeed(int &s);
@@ -16,9 +16,7 @@ class World
         bool save();
         bool load();
 
-        bool draw(Renderer& renderer);
-
-        const int BLOCK_PX_SIZE = 32;
+        bool draw(Renderer& renderer, Camera& camera, int windowWidth, int windowHeight);
 
     private:
 

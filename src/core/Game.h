@@ -3,9 +3,9 @@
 #include <SDL3/SDL.h>
 
 #include "Window.h"
-#include "../render/Renderer.h"
-#include "../ui/MenuManager.h"
-#include "GameScene.h"
+#include "render/Renderer.h"
+#include "ui/MenuManager.h"
+#include "core/scenes/GameScene.h"
 
 enum class GameState { InMenu, Playing };
 
@@ -45,4 +45,6 @@ class Game
         GameState state = GameState::InMenu;
         FrameInfo frame;
         bool running = true;
+
+        Uint64 lastTicks = 0;
 };

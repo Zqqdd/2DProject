@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../render/Renderer.h"
+#include "render/Renderer.h"
 #include "Button.h"
 #include "Rect.h"
 

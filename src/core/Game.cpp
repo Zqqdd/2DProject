@@ -30,6 +30,7 @@ bool Game::init()
     windowptr = window.GetAddress();
 
     menuManager.load(renderer);
+    lastTicks = SDL_GetTicks();
     return true;
 }
 
@@ -38,6 +39,9 @@ void Game::readFrameInfo()
     SDL_GetWindowSizeInPixels(windowptr, &frame.width, &frame.height);
     SDL_MouseButtonFlags mouseButtons = SDL_GetMouseState(&frame.mouseX, &frame.mouseY);
     frame.mouseDown = (mouseButtons & SDL_BUTTON_LMASK) != 0;
+    Uint64 now = SDL_GetTicks();
+    frame.deltaTime = (now - lastTicks) / 1000.0f;
+    lastTicks = now;
 }
 
 void Game::handleEvents()
@@ -59,7 +63,7 @@ void Game::update()
         menuManager.update(frame.mouseX, frame.mouseY, frame.mouseDown, frame.width, frame.height);
         break;
     case GameState::Playing:
-        gameScene.update();
+        gameScene.update(frame.deltaTime);
         break;
     }
 }
@@ -74,7 +78,7 @@ void Game::draw()
         menuManager.draw(renderer, frame.width, frame.height);
         break;
     case GameState::Playing:
-        gameScene.draw(renderer);
+        gameScene.draw(renderer, frame.width, frame.height);
         break;
     }
 

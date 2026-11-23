@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../render/Renderer.h"
-#include "menus/MainMenu.h"
+#include "render/Renderer.h"
+#include "ui/menus/MainMenu.h"
 
 enum class MenuId {Main};
 enum class MenuRequest {None, StartGame, Quit};

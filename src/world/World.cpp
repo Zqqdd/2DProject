@@ -25,12 +25,6 @@ bool World::init(Renderer& renderer, unsigned int sizeX, unsigned int sizeY, uns
     return true;
 }
 
-void World::coordsToScreen(int x, int y, int z, float& screenX, float& screenY)
-{
-    screenX = (x-y)*(BLOCK_PX_SIZE/2);
-    screenY = (x+y)*(BLOCK_PX_SIZE/4) - (z*(BLOCK_PX_SIZE/2));
-}
-
 bool World::setSize(int x, int y, int z)
 {
     // Un monde vide ou de taille négative n'a pas de sens : on refuse.
@@ -107,20 +101,18 @@ bool World::generate()
     return true;
 }
 
-bool World::draw(Renderer& renderer)
+bool World::draw(Renderer& renderer, Camera& camera, int windowWidth, int windowHeight)
 {
-    for (int z = 0; z < height; ++z)
-    {
-        for (int y = 0; y < depth; ++y)
-        {
-            for (int x = 0; x < width; ++x) 
+    int zoom = camera.getZoom();
+    for (int y = 0; y < depth; y++)
+        for (int x = 0; x < width; x++)
+            for (int z = 0; z < height; z++) 
             {
-                float screenX;
-                float screenY;
-                coordsToScreen(x, y, z, screenX, screenY);
-                renderer.drawTexture(blockTexture, screenX, screenY, blockTexture.width, blockTexture.height);
+                float sx;
+                float sy;
+                camera.worldToScreen(x, y, z, windowWidth, windowHeight, sx, sy);
+                renderer.drawTexture(blockTexture, sx, sy, blockTexture.width * zoom, blockTexture.height * zoom);
             }
-        }
-    }
+
     return true;
 }
