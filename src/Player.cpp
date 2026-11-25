@@ -4,10 +4,6 @@
 #include <SDL3/SDL_keyboard.h>
 #include <SDL3/SDL_opengl.h>
 #include "render/Renderer.h"
-#include "core/Game.h"
-
-
-
 
 void Player::create()
 {
@@ -17,14 +13,17 @@ void Player::create()
     int force = 1;
 
 }
+
 void Player::kill()
 {
     PV = 0;
 }
+
 void Player::heal()
 {
     PV = 10;
 }
+
 void Player::attacked()
 {
     PV -= 1;

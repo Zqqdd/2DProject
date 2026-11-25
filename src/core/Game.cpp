@@ -50,6 +50,7 @@ void Game::handleEvents()
     while (SDL_PollEvent(&event)) // File d'évènement
     {
         if(event.type == SDL_EVENT_QUIT) running = false;
+        gameScene.handleEvent(event);
     }
     if(frame.mouseDown && menuManager.handleClick(frame.mouseX, frame.mouseY, frame.width, frame.height) == MenuRequest::Quit) running = false;
     if(frame.mouseDown && menuManager.handleClick(frame.mouseX, frame.mouseY, frame.width, frame.height) == MenuRequest::StartGame) changeState(GameState::Playing);

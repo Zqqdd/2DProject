@@ -1,7 +1,7 @@
 #include "GameScene.h"
 
 #include <iostream>
-#include <SDL3/SDL.h>
+#include <cmath>
 
 void GameScene::load(Renderer& renderer)
 {
@@ -49,4 +49,22 @@ void GameScene::updateCamera(float deltaTime, const bool* keys)
 void GameScene::draw(Renderer& renderer, int windowWidth, int windowHeight)
 {
     world.draw(renderer, camera, windowWidth, windowHeight);
+}
+
+void GameScene::handleEvent(const SDL_Event& event)
+{
+    if(event.type == SDL_EVENT_MOUSE_WHEEL)
+    {
+        float wheelY = event.wheel.y;
+
+        if(event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED) // Pour les trackpads qui inversent le sens de molette
+            wheelY = -wheelY;
+        
+        if(wheelY > 0)
+            camera.setZoom(camera.getZoom() + 1);
+        
+        if(wheelY < 0)
+            camera.setZoom(camera.getZoom() - 1);
+        
+    }
 }
